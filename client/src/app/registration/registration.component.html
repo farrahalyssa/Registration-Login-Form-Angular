@@ -1,2 +1,27 @@
 <p>Registration works!</p>
-<button (click)="onSub()" type="submit" class="submit-btn">Navigate to Home</button>
+<form (ngSubmit)="register($event)">
+    <div>
+      <label for="firstName">First name </label>
+      <input id="firstName" type="text" [(ngModel)]="firstName" name="firstName" required />
+    </div>
+
+    <div>
+        <label for="lastName">Last name </label>
+        <input id="lastName" type="text" [(ngModel)]="lastName" name="lastName" required />
+      </div>
+  
+    <div>
+      <label for="email">Email </label>
+      <input id="email" type="email" [(ngModel)]="email" name="email" required />
+    </div>
+  
+    <div>
+      <label for="password">Password </label>
+      <input id="password" type="password" [(ngModel)]="password" name="password" required />
+    </div>
+  
+    <div>
+      <button type="submit" class="submit-btn">Submit</button>
+    </div>
+  </form>
+  
