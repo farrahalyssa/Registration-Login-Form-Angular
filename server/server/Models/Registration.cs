@@ -1,5 +1,5 @@
 namespace server.Models{
-        public class User{
+        public class Registration{
             public required int UserId {get; set;}
             public required string Name {get; set;}
             public required string Email {get; set;}
@@ -8,6 +8,12 @@ namespace server.Models{
 
         }
     
+        public enum AccountStatus {
+        Active = 1,
+        Inactive = 0
+        
+        }
+
 }
 
   // "ConnectionStrings": {
