@@ -8,16 +8,16 @@ namespace server.Controllers { //basically used for organizing the code, saying 
     [ApiController] //handles HTTP requests
 
 //primary constructor syntax, only works for records and struct types, not normal classes 
-    public class AuthController : ControllerBase { //the apicontroller, t inherits from ControllerBase, which provides HTTP request handling (like GET, POST, etc.).
+    public class RegisterController : ControllerBase { //the apicontroller, t inherits from ControllerBase, which provides HTTP request handling (like GET, POST, etc.).
 
         private readonly IConfiguration _configuration;
-        public AuthController(IConfiguration configuration)
+        public RegisterController(IConfiguration configuration)
         {
             _configuration = configuration;
         }
         
        [HttpPost]
-        [Route("registration")]
+        [Route("")]
         public IActionResult Registration(User user)
         {
             try
@@ -58,9 +58,12 @@ namespace server.Controllers { //basically used for organizing the code, saying 
                 return StatusCode(500, new { message = $"Error: {ex.Message}" });
             }
         
-    
 
-        // public string login(Registration registration){
+
+    }}
+}
+
+// public string login(Registration registration){
             //sql connection
             //sql data adapter ??
             // what is a datable 
@@ -69,6 +72,3 @@ namespace server.Controllers { //basically used for organizing the code, saying 
             // valid user invalid user why dt.rows >0 ?? i dont get it
 
         // }
-
-    }}
-}
