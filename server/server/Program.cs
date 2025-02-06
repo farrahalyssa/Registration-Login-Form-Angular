@@ -2,9 +2,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers(); // Add this line for Controller support
-// builder.Services.AddSwaggerGen(); // For OpenAPI/Swagger documentation
+builder.Services.AddSwaggerGen(); // For OpenAPI/Swagger documentation
 // builder.Services.AddSingleton<MySqlConnectionService>();
-
 
 var app = builder.Build();
 

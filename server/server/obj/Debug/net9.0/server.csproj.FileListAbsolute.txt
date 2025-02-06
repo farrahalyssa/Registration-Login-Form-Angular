@@ -57,3 +57,6 @@
 /Users/farrahpepino/Documents/GitHub/Registration-Login-Form-Angular/server/server/obj/Debug/net9.0/server.pdb
 /Users/farrahpepino/Documents/GitHub/Registration-Login-Form-Angular/server/server/obj/Debug/net9.0/server.genruntimeconfig.cache
 /Users/farrahpepino/Documents/GitHub/Registration-Login-Form-Angular/server/server/obj/Debug/net9.0/ref/server.dll
+/Users/farrahpepino/Documents/GitHub/Registration-Login-Form-Angular/server/server/bin/Debug/net9.0/Swashbuckle.AspNetCore.Swagger.dll
+/Users/farrahpepino/Documents/GitHub/Registration-Login-Form-Angular/server/server/bin/Debug/net9.0/Swashbuckle.AspNetCore.SwaggerGen.dll
+/Users/farrahpepino/Documents/GitHub/Registration-Login-Form-Angular/server/server/bin/Debug/net9.0/Swashbuckle.AspNetCore.SwaggerUI.dll
