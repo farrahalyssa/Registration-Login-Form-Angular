@@ -7,10 +7,12 @@ namespace server.Models{
             public required string userName {get; set;}
             [EmailAddress]
             public required string userEmail {get; set;}
-            [MinLength(12)]
+            [MinLength(8)]
 
             public required string userPassword {get; set;}
             public required Boolean isActive {get; set;}
+
+            public DateTime CreatedAt { get; set; } 
 
         }
     
