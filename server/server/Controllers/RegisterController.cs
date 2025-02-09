@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using server.Models;
 using MySql.Data.MySqlClient;
-
+using server.Services;
 
 namespace server.Controllers { //basically used for organizing the code, saying it belongs to server/Contollers
     [Route("api/[controller]")]
@@ -11,9 +11,12 @@ namespace server.Controllers { //basically used for organizing the code, saying 
     public class RegisterController : ControllerBase { //the apicontroller, t inherits from ControllerBase, which provides HTTP request handling (like GET, POST, etc.).
 
         private readonly IConfiguration _configuration;
-        public RegisterController(IConfiguration configuration)
+
+        private readonly JwtService _jwtService;
+        public RegisterController(IConfiguration configuration, JwtService jwtService)
         {
             _configuration = configuration;
+            _jwtService = jwtService;
         }
         
        [HttpPost]
@@ -23,6 +26,8 @@ namespace server.Controllers { //basically used for organizing the code, saying 
             try
             {
                 string? connectionString = _configuration.GetConnectionString("Users");
+                string hashedPassword = PasswordService.HashPassword(user.userPassword);
+
                 
 
                 using (MySqlConnection con = new MySqlConnection(connectionString))
@@ -42,6 +47,7 @@ namespace server.Controllers { //basically used for organizing the code, saying 
                         int result = cmd.ExecuteNonQuery();
                         if (result > 0)
                         {
+                            var token = _jwtService.GenerateJwtToken(user);
                             return StatusCode(201, new { message = "Data inserted successfully." });
                         }
                         else
@@ -62,13 +68,3 @@ namespace server.Controllers { //basically used for organizing the code, saying 
 
     }}
 }
-
-// public string login(Registration registration){
-            //sql connection
-            //sql data adapter ??
-            // what is a datable 
-
-
-            // valid user invalid user why dt.rows >0 ?? i dont get it
-
-        // }

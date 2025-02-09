@@ -1,12 +1,22 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using server.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers(); // Add this line for Controller support
 builder.Services.AddSwaggerGen(); // For OpenAPI/Swagger documentation
+
+var jwtConfig = builder.Configuration.GetSection("JwtConfig").Get<JwtConfig>();
+
+if (jwtConfig == null || string.IsNullOrEmpty(jwtConfig.Key))
+{
+    throw new ArgumentNullException("JWT configuration or key is not provided.");
+}
+
+
 builder.Services.AddAuthentication(options => 
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -17,9 +27,9 @@ builder.Services.AddAuthentication(options =>
     options.RequireHttpsMetadata = false; //enable for development
     options.SaveToken = true;
     options.TokenValidationParameters = new TokenValidationParameters{
-    ValidIssuer = builder.Configuration["JwtConfig:Issuer"],
-    ValidAudience = builder.Configuration["JwtConfig:Audience"],
-    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtConfig:Key"]!)),
+    ValidIssuer = jwtConfig.Issuer,
+    ValidAudience = jwtConfig.Audience,
+    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfig.Key)),
     ValidateIssuer =  true,
     ValidateAudience = true,
     ValidateLifetime = true,
