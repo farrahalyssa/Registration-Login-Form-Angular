@@ -1,6 +1,6 @@
 namespace server.Models
 {
-    public class JwtUserDto
+    public class JwtUser
     {
         public string? userPassword { get; set; }
 

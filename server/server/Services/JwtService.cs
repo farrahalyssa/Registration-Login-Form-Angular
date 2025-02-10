@@ -23,7 +23,7 @@ namespace server.Services
         }
 
         // Generate a JWT token
-        public string GenerateJwtToken(JwtUserDto user)
+        public string GenerateJwtToken(JwtUser user)
         {
             if (_jwtConfig == null)
                 throw new InvalidOperationException("JWT configuration is not properly set.");

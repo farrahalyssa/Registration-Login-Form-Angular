@@ -48,7 +48,7 @@ namespace server.Controllers { //basically used for organizing the code, saying 
                         int result = cmd.ExecuteNonQuery();
                         if (result > 0)
                         {
-                            var jwtUser = new JwtUserDto
+                            var jwtUser = new JwtUser
                             {
                                 email = user.email
                             };

@@ -20,7 +20,7 @@ namespace server.Controllers
 
         [HttpPost]
         [Route("")]
-        public IActionResult Login([FromBody] JwtUserDto user)
+        public IActionResult Login([FromBody] JwtUser user)
         {
             try
             {
@@ -54,7 +54,7 @@ namespace server.Controllers
 
                                 if (isPasswordValid)
                                 {
-                                      var jwtUser = new JwtUserDto
+                                      var jwtUser = new JwtUser
                                     {
                                         email = reader["email"]?.ToString() ?? string.Empty
                                     };
