@@ -44,6 +44,8 @@ namespace server.Services
             var claims = new[]
             {
                 new Claim(ClaimTypes.Email, user.email),
+                new Claim(JwtRegisteredClaimNames.Iss, "http://localhost:5003"),
+                new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString())
             };
 
             var credentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256);
