@@ -28,7 +28,9 @@ export class RegistrationComponent {
   private http = inject(HttpClient);
 
   constructor(private authService: AuthService, private router: Router) {}
-  
+  navigateToLogin(){
+    this.router.navigate(['/login']);
+  };
   registerUser() {
     this.isLoading = true;  // Set loading state to true
     this.authService.register(this.user).subscribe(

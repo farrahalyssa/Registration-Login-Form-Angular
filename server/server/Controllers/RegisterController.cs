@@ -23,6 +23,7 @@ namespace server.Controllers { //basically used for organizing the code, saying 
         [Route("")]
         public IActionResult Register([FromBody] User user)
         {
+            
 
             try
             {
@@ -47,7 +48,12 @@ namespace server.Controllers { //basically used for organizing the code, saying 
                         int result = cmd.ExecuteNonQuery();
                         if (result > 0)
                         {
-                            var token = _jwtService.GenerateJwtToken(user);
+                            var jwtUser = new JwtUserDto
+                            {
+                                email = user.email
+                            };
+                            
+                            var token = _jwtService.GenerateJwtToken(jwtUser);
                             return StatusCode(201, new { message = "Data inserted successfully." });
                         }
                         else

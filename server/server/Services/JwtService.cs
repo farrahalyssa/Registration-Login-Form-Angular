@@ -23,7 +23,7 @@ namespace server.Services
         }
 
         // Generate a JWT token
-        public string GenerateJwtToken(User user)
+        public string GenerateJwtToken(JwtUserDto user)
         {
             if (_jwtConfig == null)
                 throw new InvalidOperationException("JWT configuration is not properly set.");
@@ -43,11 +43,7 @@ namespace server.Services
             // Claims to be added to the token
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.userEmail),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim("userId", user.userId.ToString()),
-                new Claim(JwtRegisteredClaimNames.Iss, "http://localhost:5001/"),
-                new Claim(JwtRegisteredClaimNames.Aud, "http://localhost:4200/"),
+                new Claim(ClaimTypes.Email, user.email),
             };
 
             var credentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256);
@@ -63,7 +59,7 @@ namespace server.Services
             var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
 
             // Log token generation
-            _logger.LogInformation($"JWT token generated for user: {user.userEmail}");
+            _logger.LogInformation($"JWT token generated for user: {user.email}");
 
             return tokenString;
         }

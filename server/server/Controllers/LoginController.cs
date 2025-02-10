@@ -20,7 +20,7 @@ namespace server.Controllers
 
         [HttpPost]
         [Route("")]
-        public IActionResult Login([FromBody] User loginUser)
+        public IActionResult Login([FromBody] JwtUserDto user)
         {
             try
             {
@@ -29,42 +29,37 @@ namespace server.Controllers
                 using (MySqlConnection con = new MySqlConnection(connectionString))
                 {
                     con.Open();
-                    string query = "SELECT userName, userPassword, email, isActive FROM User WHERE userEmail = @userEmail";
+                    string query = "SELECT userId, userName, email, userPassword, isActive FROM User WHERE LOWER(email) = LOWER(@email)";
 
                     using (MySqlCommand cmd = new MySqlCommand(query, con))
                     {
-                        cmd.Parameters.AddWithValue("@userEmail", loginUser.userEmail);
+                        cmd.Parameters.AddWithValue("@email", user.email);
 
                         using (MySqlDataReader reader = cmd.ExecuteReader())
                         {
                             if (reader.Read())
                             {
-                                // Retrieve the stored hashed password from the database
-                                string? storedHash = reader["userPassword"]?.ToString();
-
-                                // Check if storedHash is null or empty
+                                string? storedHash = reader["userPassword"] as string;
                                 if (string.IsNullOrEmpty(storedHash))
                                 {
                                     return Unauthorized(new { message = "Invalid credentials." });
                                 }
 
-                                // Verify the entered password against the stored hash
-                                bool isPasswordValid = PasswordService.VerifyPassword(loginUser.userPassword, storedHash);
+                                if (string.IsNullOrEmpty(user.userPassword) || string.IsNullOrEmpty(storedHash))
+                                {
+                                    return Unauthorized(new { message = "Invalid credentials." });
+                                }
+
+                                bool isPasswordValid = PasswordService.VerifyPassword(user.userPassword!, storedHash);
 
                                 if (isPasswordValid)
                                 {
-                                    // Create a User object without the userPassword field
-                                    var user = new User
+                                      var jwtUser = new JwtUserDto
                                     {
-                                        userId = reader["userId"]?.ToString() ?? string.Empty,
-                                        userName = reader["userName"]?.ToString() ?? string.Empty,
-                                        userPassword = reader["userPassword"]?.ToString() ?? string.Empty, 
-                                        userEmail = reader["email"]?.ToString() ?? string.Empty,
-                                        isActive = reader["isActive"] != DBNull.Value ? Convert.ToBoolean(reader["isActive"]) : false
+                                        email = reader["email"]?.ToString() ?? string.Empty
                                     };
 
-                                    // Generate the JWT token
-                                    var token = _jwtService.GenerateJwtToken(user);
+                                    var token = _jwtService.GenerateJwtToken(jwtUser);
 
                                     return Ok(new { message = "Login successful.", token = token });
                                 }

@@ -4,12 +4,13 @@
   <input [(ngModel)]="user.userName" name="userName" required />
 
   <label>Email:</label>
-  <input [(ngModel)]="user.userEmail" name="userEmail" required />
+  <input [(ngModel)]="user.email" name="email" required />
 
   <label>Password:</label>
   <input [(ngModel)]="user.userPassword" name="userPassword" type="password" required />
 
   <button type="submit">Register</button>
+  <button type="button" (click)="navigateToLogin()">Go to Login</button> 
 </form>
 
   

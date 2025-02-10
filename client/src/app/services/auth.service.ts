@@ -18,8 +18,9 @@ export class AuthService {
     const token = localStorage.getItem('jwt');
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
-      'Authorization': token ? 'Basic ' + token : '' // Add token if available
+      'Authorization': token ? `Bearer ${token}` : ''
     });
+    
     console.log(user);
     return this.http.post(`${this.apiUrl}/register`, user, {headers})
     .pipe(
@@ -30,9 +31,17 @@ export class AuthService {
   }
   
   // Login a user
-  login(user: { userEmail: string; userPassword: string }): Observable<any> {
-    return this.http.post(`${this.apiUrl}/login`, user);
+  login(user: { email: string; userPassword: string; isActive: true; }): Observable<any> {
+    return this.http.post(`${this.apiUrl}/login`, user, {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+    }).pipe(
+      catchError(error => {
+        console.error('Login error:', error);
+        throw error;
+      })
+    );
   }
+  
 
   // Store JWT token
   saveToken(token: string): void {
