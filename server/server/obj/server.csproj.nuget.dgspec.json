@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/farrahpepino/Documents/GitHub/Registration-Login-Form-Angular/server/server/server.csproj": {}
+    "/Users/farrahpepino/Documents/GitHub/UserAuth-Angular/server/server/server.csproj": {}
   },
   "projects": {
-    "/Users/farrahpepino/Documents/GitHub/Registration-Login-Form-Angular/server/server/server.csproj": {
+    "/Users/farrahpepino/Documents/GitHub/UserAuth-Angular/server/server/server.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/farrahpepino/Documents/GitHub/Registration-Login-Form-Angular/server/server/server.csproj",
+        "projectUniqueName": "/Users/farrahpepino/Documents/GitHub/UserAuth-Angular/server/server/server.csproj",
         "projectName": "server",
-        "projectPath": "/Users/farrahpepino/Documents/GitHub/Registration-Login-Form-Angular/server/server/server.csproj",
+        "projectPath": "/Users/farrahpepino/Documents/GitHub/UserAuth-Angular/server/server/server.csproj",
         "packagesPath": "/Users/farrahpepino/.nuget/packages/",
-        "outputPath": "/Users/farrahpepino/Documents/GitHub/Registration-Login-Form-Angular/server/server/obj/",
+        "outputPath": "/Users/farrahpepino/Documents/GitHub/UserAuth-Angular/server/server/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/farrahpepino/.nuget/NuGet/NuGet.Config"

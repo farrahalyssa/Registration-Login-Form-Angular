@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "lX6ToXQdUsk=",
+  "dgSpecHash": "6pUrzcOdto4=",
   "success": true,
-  "projectFilePath": "/Users/farrahpepino/Documents/GitHub/Registration-Login-Form-Angular/server/server/server.csproj",
+  "projectFilePath": "/Users/farrahpepino/Documents/GitHub/UserAuth-Angular/server/server/server.csproj",
   "expectedPackageFiles": [
     "/Users/farrahpepino/.nuget/packages/bouncycastle.cryptography/2.3.1/bouncycastle.cryptography.2.3.1.nupkg.sha512",
     "/Users/farrahpepino/.nuget/packages/dnsclient/1.6.1/dnsclient.1.6.1.nupkg.sha512",

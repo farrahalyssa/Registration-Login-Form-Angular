@@ -45,7 +45,9 @@ namespace server.Services
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.userEmail),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim("userId", user.userId.ToString())
+                new Claim("userId", user.userId.ToString()),
+                new Claim(JwtRegisteredClaimNames.Iss, "http://localhost:5001/"),
+                new Claim(JwtRegisteredClaimNames.Aud, "http://localhost:4200/"),
             };
 
             var credentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256);
@@ -58,55 +60,64 @@ namespace server.Services
                 signingCredentials: credentials
             );
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+
+            // Log token generation
+            _logger.LogInformation($"JWT token generated for user: {user.userEmail}");
+
+            return tokenString;
         }
 
         // Validate the JWT token
-       public ClaimsPrincipal? ValidateToken(string token)
-{
-    if (string.IsNullOrEmpty(_jwtConfig?.Key))
-    {
-        throw new InvalidOperationException("JWT key is not provided in the configuration.");
-    }
-
-    var key = Encoding.UTF8.GetBytes(_jwtConfig.Key);
-    var tokenHandler = new JwtSecurityTokenHandler();
-
-    var validationParameters = new TokenValidationParameters
-    {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = _jwtConfig.Issuer,
-        ValidAudience = _jwtConfig.Audience,
-        IssuerSigningKey = new SymmetricSecurityKey(key)
-    };
-
-    try
-    {
-        var principal = tokenHandler.ValidateToken(token, validationParameters, out var validatedToken);
-
-        if (validatedToken is JwtSecurityToken jwtToken)
+        public ClaimsPrincipal? ValidateToken(string token)
         {
-            if (jwtToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.OrdinalIgnoreCase))
+            if (string.IsNullOrEmpty(_jwtConfig?.Key))
             {
-                return principal; // Return the ClaimsPrincipal if the token is valid
+                throw new InvalidOperationException("JWT key is not provided in the configuration.");
+            }
+
+            var key = Encoding.UTF8.GetBytes(_jwtConfig.Key);
+            var tokenHandler = new JwtSecurityTokenHandler();
+
+            var validationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = _jwtConfig.Issuer,
+                ValidAudience = _jwtConfig.Audience,
+                IssuerSigningKey = new SymmetricSecurityKey(key)
+            };
+
+            try
+            {
+                var principal = tokenHandler.ValidateToken(token, validationParameters, out var validatedToken);
+
+                if (validatedToken is JwtSecurityToken jwtToken)
+                {
+                    if (jwtToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.OrdinalIgnoreCase))
+                    {
+                        // Log successful token validation
+                        _logger.LogInformation($"JWT token validated for user: {principal.Identity?.Name}");
+
+                        return principal; // Return the ClaimsPrincipal if the token is valid
+                    }
+                }
+
+                _logger.LogWarning("Invalid JWT token header algorithm.");
+                return null; // Invalid token, return null
+            }
+            catch (SecurityTokenExpiredException)
+            {
+                _logger.LogWarning("JWT token expired.");
+                return null; // Return null if the token has expired
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error validating token: {ex.Message}");
+                return null; // Return null for any other validation errors
             }
         }
-
-        return null; // Invalid token, return null
     }
-    catch (SecurityTokenExpiredException)
-    {
-        return null; // Return null if the token has expired
-    }
-    catch (Exception)
-    {
-        return null; // Return null for any other validation errors
-    }
-}
-
-    }
-
 }

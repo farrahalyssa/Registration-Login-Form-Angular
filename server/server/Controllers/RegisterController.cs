@@ -21,27 +21,27 @@ namespace server.Controllers { //basically used for organizing the code, saying 
         
        [HttpPost]
         [Route("")]
-        public IActionResult Registration(User user)
+        public IActionResult Register([FromBody] User user)
         {
+
             try
             {
                 string? connectionString = _configuration.GetConnectionString("Users");
                 string hashedPassword = PasswordService.HashPassword(user.userPassword);
 
-                
 
                 using (MySqlConnection con = new MySqlConnection(connectionString))
                 {
+                    Console.WriteLine($"userName: {user.userName}, userEmail: {user.email}, userPassword: {user.userPassword}, userId: {user.userId}, isActive: {user.isActive}");
                     con.Open();
                     string query = "INSERT INTO User(userName, userId, userPassword, email, isActive) " +
-                                   "VALUES(@userName, @userId, @userPassword, @email, true)";
-
+                                   "VALUES(@userName, @userId, @userPassword, @email, @isActive)";
                     using (MySqlCommand cmd = new MySqlCommand(query, con))
                     {
                         cmd.Parameters.AddWithValue("@userName", user.userName);
                         cmd.Parameters.AddWithValue("@userId", user.userId);
-                        cmd.Parameters.AddWithValue("@userPassword", user.userPassword);
-                        cmd.Parameters.AddWithValue("@email", user.userEmail);
+                        cmd.Parameters.AddWithValue("@userPassword", hashedPassword);
+                        cmd.Parameters.AddWithValue("@email", user.email);
                         cmd.Parameters.AddWithValue("@isActive", user.isActive);
 
                         int result = cmd.ExecuteNonQuery();
@@ -61,7 +61,7 @@ namespace server.Controllers { //basically used for organizing the code, saying 
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = $"Error: {ex.Message}" });
+            return StatusCode(500, new { message = $"Error: {ex.Message}", stackTrace = ex.StackTrace });
             }
         
 

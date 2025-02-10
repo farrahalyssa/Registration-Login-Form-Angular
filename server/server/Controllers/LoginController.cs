@@ -29,7 +29,7 @@ namespace server.Controllers
                 using (MySqlConnection con = new MySqlConnection(connectionString))
                 {
                     con.Open();
-                    string query = "SELECT userId, userName, userPassword, email, isActive FROM User WHERE userEmail = @userEmail";
+                    string query = "SELECT userName, userPassword, email, isActive FROM User WHERE userEmail = @userEmail";
 
                     using (MySqlCommand cmd = new MySqlCommand(query, con))
                     {
@@ -56,7 +56,7 @@ namespace server.Controllers
                                     // Create a User object without the userPassword field
                                     var user = new User
                                     {
-                                        userId = reader["userId"] != DBNull.Value ? Convert.ToInt32(reader["userId"]) : 0,
+                                        userId = reader["userId"]?.ToString() ?? string.Empty,
                                         userName = reader["userName"]?.ToString() ?? string.Empty,
                                         userPassword = reader["userPassword"]?.ToString() ?? string.Empty, 
                                         userEmail = reader["email"]?.ToString() ?? string.Empty,
