@@ -2,7 +2,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using server.Models;
-using server.Services; // Ensure this is included to reference your JwtService
+using server.Services; 
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,7 +21,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddControllers(); // Add this line for Controller support
 builder.Services.AddSwaggerGen(); // For OpenAPI/Swagger documentation
 
-// Register JwtService (Fix the location of this registration)
+// Register JwtService 
 builder.Services.AddScoped<JwtService>(); // or AddSingleton/AddTransient based on your needs
 builder.Services.AddScoped<LoginService>();
 builder.Services.AddScoped<RegisterService>();
