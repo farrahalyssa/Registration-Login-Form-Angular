@@ -23,6 +23,8 @@ builder.Services.AddSwaggerGen(); // For OpenAPI/Swagger documentation
 
 // Register JwtService (Fix the location of this registration)
 builder.Services.AddScoped<JwtService>(); // or AddSingleton/AddTransient based on your needs
+builder.Services.AddScoped<LoginService>();
+builder.Services.AddScoped<RegisterService>();
 
 // JWT configuration
 var jwtConfig = builder.Configuration.GetSection("JwtConfig").Get<JwtConfig>();

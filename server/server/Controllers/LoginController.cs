@@ -1,5 +1,5 @@
+
 using Microsoft.AspNetCore.Mvc;
-using MySql.Data.MySqlClient;
 using server.Models;
 using server.Services;
 
@@ -9,12 +9,12 @@ namespace server.Controllers
     [ApiController]
     public class LoginController : ControllerBase
     {
-        private readonly IConfiguration _configuration;
+        private readonly LoginService _loginService;
         private readonly JwtService _jwtService;
 
-        public LoginController(IConfiguration configuration, JwtService jwtService)
+        public LoginController(LoginService loginService, JwtService jwtService)
         {
-            _configuration = configuration;
+            _loginService = loginService;
             _jwtService = jwtService;
         }
 
@@ -22,59 +22,21 @@ namespace server.Controllers
         [Route("")]
         public IActionResult Login([FromBody] JwtUser user)
         {
+               if (string.IsNullOrEmpty(user.userPassword))
+                {
+                    return Unauthorized(new { message = "Invalid credentials." });
+                }
             try
             {
-                string? connectionString = _configuration.GetConnectionString("Users");
+                var authenticatedUser = _loginService.AuthenticateUser(user.email, user.userPassword);
 
-                using (MySqlConnection con = new MySqlConnection(connectionString))
+                if (authenticatedUser == null)
                 {
-                    con.Open();
-                    string query = "SELECT userId, userName, email, userPassword, isActive FROM User WHERE LOWER(email) = LOWER(@email)";
-
-                    using (MySqlCommand cmd = new MySqlCommand(query, con))
-                    {
-                        cmd.Parameters.AddWithValue("@email", user.email);
-
-                        using (MySqlDataReader reader = cmd.ExecuteReader())
-                        {
-                            if (reader.Read())
-                            {
-                                string? storedHash = reader["userPassword"] as string;
-                                if (string.IsNullOrEmpty(storedHash))
-                                {
-                                    return Unauthorized(new { message = "Invalid credentials." });
-                                }
-
-                                if (string.IsNullOrEmpty(user.userPassword) || string.IsNullOrEmpty(storedHash))
-                                {
-                                    return Unauthorized(new { message = "Invalid credentials." });
-                                }
-
-                                bool isPasswordValid = PasswordService.VerifyPassword(user.userPassword!, storedHash);
-
-                                if (isPasswordValid)
-                                {
-                                      var jwtUser = new JwtUser
-                                    {
-                                        email = reader["email"]?.ToString() ?? string.Empty
-                                    };
-
-                                    var token = _jwtService.GenerateJwtToken(jwtUser);
-
-                                    return Ok(new { message = "Login successful.", token = token });
-                                }
-                                else
-                                {
-                                    return Unauthorized(new { message = "Invalid credentials." });
-                                }
-                            }
-                            else
-                            {
-                                return NotFound(new { message = "User not found." });
-                            }
-                        }
-                    }
+                    return Unauthorized(new { message = "Invalid credentials." });
                 }
+
+                var token = _jwtService.GenerateJwtToken(authenticatedUser);
+                return Ok(new { message = "Login successful.", token = token });
             }
             catch (Exception ex)
             {
